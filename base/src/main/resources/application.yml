@@ -1,0 +1,85 @@
+server:
+  port: 8080
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  thymeleaf:
+    cache: false
+
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://localhost:5430/seed?characterEncoding=utf8&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: passw@rd
+
+  jpa:
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        enable_lazy_load_no_trans: true
+
+  freemarker:
+    check-template-location: false
+
+
+management:
+  #Actuator health
+  health:
+    defaults:
+      enabled: false
+
+filters:
+  cors:
+    path: "/**"
+    allowed-origin-patterns: "*"
+    allowed-headers: "*"
+    allowed-methods: "*"
+    allow-credentials: true
+
+
+jwt:
+  access-token-expiration-time:  60000 # minute
+  refresh-token-expiration-time: 120 # minute
+  # TODO please update
+  token-issuer: issue-server
+  token-signing-key: vxk9D2cAeTsMgNpo7tZKWwFlQmzRBObU
+
+
+logging:
+  level:
+    root: info
+  file:
+    path: ./logs
+
+#generator:
+#  enabled: true
+#
+sbibits:
+  springfox:
+    enabled: true
+    base-package: com.sbi.dl
+    # TODO pls update to yourself project name
+    title: bo-seed api docs
+    description: for reference only
+    version: 1.0.0
+
+auth:
+  uri:
+    entry-point-white-list:
+        - "/pub/*"
+        - "/public/*"
+        - "/int/v1/login"
+        - "/swagger**/**"
+        - "/v3/api-docs"
+#        - "/int/v1/staff"
+    authorize-request-url: "/**"
+    login: "/int/v1/login"
+
+
+#debug: true

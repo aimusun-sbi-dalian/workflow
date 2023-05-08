@@ -1,0 +1,29 @@
+
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+apply from: "${rootDir}/publish.gradle"
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-freemarker'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+
+
+    // apache
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'org.apache.commons:commons-pool2:2.11.1'
+    implementation 'org.apache.commons:commons-collections4:4.4'
+
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+//    implementation project(':components')
+    implementation "com.sbi.dl:components:0.0.1"
+
+
+}
+

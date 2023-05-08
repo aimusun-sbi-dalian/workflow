@@ -1,0 +1,114 @@
+stages:
+  - build
+  - push
+  - deploy
+
+variables:
+  java_docker_image: gitlab.jp.sbibits.com:5005/bits-x/bits-seed/base-image/corretto-17:2.0.0
+  gradle_proxy_config: "./gradlew"
+  DIND_IMAGE: gitlab.jp.sbibits.com:5005/chengfeng.tsai/dev-docker/docker/dev:20-dind
+  DOCKER_IMAGE_NAME: bitsx/bits-seed/bo-java-seed
+  docker_registry_read: nexus.sbisec.int:8442
+  docker_registry_write: nexus.sbisec.int:8444
+
+
+cache:
+  key: $CI_PROJECT_ID
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+
+## java common
+.java-ci-job: &java-ci-job-template
+  image:
+    name: $java_docker_image
+  tags:
+    - 4_pass_on_m102
+  except:
+    - /^web*/
+  before_script:
+    - echo `pwd`
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+    - if [ ! -d `pwd`/.gradle ]; then mkdir `pwd`/.gradle; fi;
+    - cp /usr/local/share/ca-certificates/gradle.properties `pwd`/.gradle/gradle.properties
+    - rm -f  .gradle/caches/modules-2/modules-2.lock
+    - rm -fr .gradle/caches/*/plugin-resolution/
+    - chmod +x ./gradlew
+
+.only-branch-matching:
+  only:
+    refs:
+      - develop
+      - /feature-.*$/
+      - /release-.*$/
+      - /hotfix-.*$/
+
+build:
+  <<: *java-ci-job-template
+  stage: build
+  script:
+    - $gradle_proxy_config backoffice:build --parallel --no-daemon
+  when: always
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - src/**/*
+      - gradle/**/*
+      - build.gradle
+      - settings.gradle
+      - dependency.gradle
+      - .gitlab-ci.yml
+
+
+
+push image:
+  stage: push
+  tags:
+    - 4_pass_on_m102
+  image: $DIND_IMAGE
+  script:
+    - export DOCKER_VERSION=$(grep ^[[:space:]]*version build.gradle  |awk -F \' '{print $2}')
+    - echo ${DOCKER_VERSION}
+    - sed -i "s/DBPASS/"$DEV_DB_PASS"/g" backoffice/src/main/resources/application-dev.yml
+    - echo "${CI_REGISTRY_USER}"
+    - docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" "${docker_registry_read}"
+    - docker build -f backoffice/Dockerfile -t ${docker_registry_write}/${DOCKER_IMAGE_NAME}:${DOCKER_VERSION} "${CI_PROJECT_DIR}"
+    - docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" "${docker_registry_write}"
+    - docker push ${docker_registry_write}/${DOCKER_IMAGE_NAME}:${DOCKER_VERSION}
+    - docker rmi ${docker_registry_write}/${DOCKER_IMAGE_NAME}:${DOCKER_VERSION}
+  when: manual
+  allow_failure: false
+  dependencies:
+    - build
+  extends: .only-branch-matching
+
+deploy jpdl101:
+  stage: deploy
+  tags:
+    - 4_pass_on_m102
+  environment:
+    name: dev
+  dependencies:
+    - push image
+  variables:
+    deploy_path: "/tmp/bo-java-seed/"
+    host: "m1-bits-jpdl101.ad.sbibits.com"
+  script:
+    - export DOCKER_VERSION=$(grep ^[[:space:]]*version build.gradle  |awk -F \' '{print $2}')
+    - echo "dev deploy version" ${DOCKER_VERSION}
+    - |
+      mkdir -p ~/.ssh
+      chmod 700 ~/.ssh
+      echo "${SQ_PRI}" > ~/.ssh/id_rsa
+      chmod 600 ~/.ssh/id_rsa
+      ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -tt ${SQ}@${host} > /dev/null 2>&1 << eeooff
+      docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" "${docker_registry_read}"
+      docker pull ${docker_registry_read}/${DOCKER_IMAGE_NAME}:${DOCKER_VERSION} 
+      docker stop bo-java-seed
+      docker rm bo-java-seed
+      docker run -d -p 8888:8888 --name bo-java-seed --env SPRING_PROFILES_ACTIVE=dev -v /tmp/data/bo-java-seed:/app/logs ${docker_registry_read}/${DOCKER_IMAGE_NAME}:${DOCKER_VERSION} 
+      exit
+      eeooff
+  extends: .only-branch-matching
+  when: manual

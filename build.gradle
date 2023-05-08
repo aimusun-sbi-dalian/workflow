@@ -1,0 +1,80 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'com.diffplug.spotless' version '6.10.0'
+    id 'org.springframework.boot' version '2.7.2'
+    id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+}
+
+allprojects {
+    ext {
+        NEXUS_USERNAME = 'vc-maven-ro'
+        NEXUS_PASSWORD = 'Brw3bjxdjWOcde12'
+        NEXUS_PUBLISH_ACCOUNT_USERNAME = System.getenv("MAVEN_REPO_USER")
+        NEXUS_PUBLISH_ACCOUNT_PASSWORD = System.getenv("MAVEN_REPO_PASSWORD")
+
+    }
+
+    apply from: "${rootDir}/config.gradle"
+
+    group = 'com.sbi.dl'
+    version = '0.0.1'
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
+    repositories {
+        mavenLocal()
+        maven {
+            url "https://nexus.jp.sbibits.com/repository/maven-central"
+        }
+        maven {
+            url "https://nexus.jp.sbibits.com/repository/maven-hosted/"
+            credentials {
+                username = NEXUS_USERNAME
+                password = NEXUS_PASSWORD
+            }
+        }
+        maven {
+            url "https://nexus.jp.sbibits.com/repository/maven-releases/"
+
+            credentials {
+                username = NEXUS_USERNAME
+                password = NEXUS_PASSWORD
+            }
+        }
+        maven {
+            url "https://nexus.jp.sbibits.com/repository/maven-snapshots/"
+
+            credentials {
+                username = NEXUS_USERNAME
+                password = NEXUS_PASSWORD
+            }
+        }
+
+        maven {
+            url = uri('https://maven.aliyun.com/nexus/content/groups/public')
+        }
+
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin:'org.springframework.boot'
+    apply plugin:'io.spring.dependency-management'
+    apply plugin:'java'
+    apply plugin:'idea'
+
+    dependencies {
+        // spring boot
+        implementation 'org.springframework.boot:spring-boot-starter'
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        // lombok
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        testCompileOnly 'org.projectlombok:lombok'
+        testAnnotationProcessor 'org.projectlombok:lombok'
+    }
+}

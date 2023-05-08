@@ -1,0 +1,19 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+apply from: "${rootDir}/publish.gradle"
+
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'cn.hutool:hutool-all:5.7.22'
+
+    // apache
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'org.apache.commons:commons-pool2:2.11.1'
+    implementation 'org.apache.commons:commons-collections4:4.4'
+    implementation 'commons-beanutils:commons-beanutils:1.9.4'
+}
