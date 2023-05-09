@@ -1,23 +1,25 @@
-name: Hello World
-on: push
-jobs:
-  my_first_job:
-    name: My first job
-    runs-on: ubuntu-latest
-    steps:
+name: Hello World    # workflow name
+on: push             # trigger event 
+jobs:                # exec one or more task
+  my_first_job:      # jobs_id
+    name: My first job         
+    runs-on: ubuntu-latest     
+    steps:           # job run step: name  run  env          
     - name: checkout
       uses: actions/checkout@master
     - name: Run a single-line script
-      run: echo "Hello World!"
-  my_second_job:
-    name: My second job
-    runs-on: macos-latest
-    steps:
-    - name: Run a multi-line script
       env:
         MY_VAR: Hello World!
         MY_NAME: P3TERX
       run: |
         echo $MY_VAR
         echo My name is $MY_NAME
+  my_second_job:           # jobs_id
+    name: My second job    # job task description
+    runs-on: macos-latest  # run on VM
+    needs: my_first_job    # job dependence sequence
+    steps:
+    - name: Run a multi-line script
+      run: |
+        echo "Hello World!"
         echo hi aimu
