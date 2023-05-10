@@ -29,4 +29,4 @@ jobs:                # exec one or more task
     steps:
     - name: The job has succeeded
       run: echo expression
-      if: ${{ success() }}
+      if: ${{ cancelled() }}    # if: ${{ success() }}
