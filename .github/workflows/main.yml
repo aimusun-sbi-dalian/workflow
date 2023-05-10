@@ -30,3 +30,9 @@ jobs:                # exec one or more task
     - name: The job has succeeded
       run: echo expression
       if: ${{ cancelled() }}    # if: ${{ success() }}
+  prod-check:
+    name: Test context job
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploying to production server on branch $GITHUB_REF"
