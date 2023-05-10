@@ -29,4 +29,5 @@ jobs:                # exec one or more task
     steps:
     - continue-on-error: ${{ fromJSON(env.continue) }}
       timeout-minutes: ${{ fromJSON(env.time) }}
+    - name: The job has succeeded
       if: ${{ success() }}
