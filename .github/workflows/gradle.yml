@@ -34,7 +34,4 @@ jobs:
         gradle-version: 7.4.2
         # arguments: build
     - run: gradle build --dry-run # just test build configuration
-    - name: Execute Gradle build
-      run:  |
-       chmod 777 ./gradlew 
-       ./gradlew build
+    - run: gradle build 
