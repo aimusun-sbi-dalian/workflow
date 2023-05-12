@@ -31,6 +31,7 @@ jobs:
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: build
+        gradle-version: 7.4.2
+        # arguments: build
     - name: Execute Gradle build
       run: ./gradlew build
