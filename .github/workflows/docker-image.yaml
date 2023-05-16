@@ -1,11 +1,10 @@
 name: Deploy to ECR
 
 on:
+  push:
+    branches:
+      - dev/**
   workflow_dispatch:
-  pull_request:
-    types:
-      - closed
-    branches: [ "develop" ]
 
 permissions:
   id-token: write
@@ -14,14 +13,13 @@ permissions:
 env:
   AWS_REGION: "ap-northeast-1"
   AWS_ROLE_TO_ASSUME: "arn:aws:iam::303282268504:role/GithubAssumeRoleWithWebIdentity"
-  AWS_ECR_IMAGE_NAME: "expo2025-be"
-  AWS_ECR_IMAGE_TAG: "0.1.0"
+  AWS_ECR_BO_IMAGE_NAME: "expo2025-backoffice"
 
 jobs:
   build:
     name: Build Image
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
+    environment: dev
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -39,9 +37,8 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ env.AWS_ECR_IMAGE_NAME }}
-          IMAGE_TAG: ${{ env.AWS_ECR_IMAGE_TAG }}
+          ECR_REPOSITORY: ${{ env.AWS_ECR_BO_IMAGE_NAME }}
         run: |
-          docker build -f backoffice/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -f backoffice/Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:${{ vars.ENV_TAG }} .
           echo $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
