@@ -1,0 +1,22 @@
+dependencies {
+    compileOnly 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation(libs.commons.lang3)
+    implementation(libs.commons.collections4)
+}
+
+bootJar {
+    enabled = false
+}
+
+bootJarMainClassName {
+    enabled = false
+}
+
+jar {
+    enabled = true
+    manifest {
+        attributes 'Specification-Version': archiveVersion
+        attributes 'Implementation-Version': archiveVersion
+    }
+}

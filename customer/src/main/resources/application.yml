@@ -1,0 +1,60 @@
+server:
+  port: 8888
+  shutdown: graceful
+
+spring:
+  thymeleaf:
+    cache: false
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:5430/expo2025?characterEncoding=utf8&useSSL=false
+    username: root
+    password: <PASSWORD>
+  jpa:
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        enable_lazy_load_no_trans: true
+  mail:
+    host: localhost
+    port: 25
+management:
+  #Actuator health
+  health:
+    defaults:
+      enabled: false
+filters:
+  cors:
+    path: "/**"
+    allowed-origin-patterns: "*"
+    allowed-headers: "*"
+    allowed-methods: "*"
+    allow-credentials: true
+jwt:
+  access-token-expiration-time:  240 # minute
+  refresh-token-expiration-time: 720 # minute
+  token-issuer: EXPO2025
+  token-signing-key: vxk9D2cAeTsMgNpo7tZKWwFlQmzRBObU
+logging:
+  level:
+    root: info
+    com.sbi.expo.base: info
+  file:
+    path: ./logs
+expo2025:
+  springfox:
+    enabled: true
+    base-package: com.sbi.expo
+    title: EXPO2025 API docs
+    description: for reference only
+    version: 1.0.0
+mail:
+  enable: true
+  from:
+    address: noreply@vc
+    person: BigBob

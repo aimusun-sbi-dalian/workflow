@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:5430/expo2025?characterEncoding=utf8&useSSL=false
+    username: root
+    password: <PASSWORD>

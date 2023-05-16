@@ -1,0 +1,16 @@
+plugins {
+	id 'java-library'
+}
+dependencies {
+	implementation(libs.springfox.spring.boot.starter)
+	implementation('org.springframework.boot:spring-boot-starter-web')
+	implementation('org.springframework.boot:spring-boot-starter-actuator')
+}
+
+jar {
+	enabled = true
+	manifest {
+		attributes 'Specification-Version': archiveVersion
+		attributes 'Implementation-Version': archiveVersion
+	}
+}

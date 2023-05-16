@@ -1,10 +1,16 @@
-rootProject.name = 'auth'
-include 'components'
-include 'base'
-include 'starters:auth-spring-boot-starter'
-findProject(':starters:auth-spring-boot-starter')?.name = 'auth-spring-boot-starter'
-include 'starters:springfox-spring-boot-starter'
-findProject(':starters:springfox-spring-boot-starter')?.name = 'springfox-spring-boot-starter'
-include 'starters:oauth2-spring-boot-starter'
-findProject(':starters:oauth2-spring-boot-starter')?.name = 'oauth2-spring-boot-starter'
+rootProject.name = 'expo2025-be'
 
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            from(files("./libs.versions.toml"))
+        }
+    }
+}
+include 'backoffice'
+include 'customer'
+include 'api'
+include 'starter:springfox-spring-boot-starter'
+findProject(':starter:springfox-spring-boot-starter')?.name = 'springfox-spring-boot-starter'
+include 'shared:commons'
+findProject(':shared:commons')?.name = 'commons'

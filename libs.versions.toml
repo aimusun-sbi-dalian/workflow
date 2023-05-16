@@ -1,0 +1,29 @@
+[versions]
+springboot = "2.7.2"
+google-java-format = "1.15.0"
+springfox-spring-boot-starter = "3.0.0"
+commons-lang3 = "3.12.0"
+commons-pool2 = "2.11.1"
+commons-collections4 = "4.4"
+commons-beanutils = "1.9.4"
+commons-text = "1.10.0"
+mysql-connector = "8.0.30"
+jjwt = "0.9.1"
+mapstruct = "1.5.3.Final"
+http-client = "4.5.13"
+logback-access-spring-boot-starter = "3.4.1"
+jetbrains-annotations = "24.0.1"
+
+[libraries]
+commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version.ref = "commons-lang3" }
+commons-pool2 = { group = "org.apache.commons", name = "commons-pool2", version.ref = "commons-pool2" }
+commons-collections4 = { group = "org.apache.commons", name = "commons-collections4", version.ref = "commons-collections4" }
+commons-text = { group = "org.apache.commons", name = "commons-text", version.ref = "commons-text" }
+commons-beanutils = { group = "commons-beanutils", name = "commons-beanutils", version.ref = "commons-beanutils" }
+mysql-connector = { group = "mysql", name = "mysql-connector-java", version.ref = "mysql-connector" }
+jjwt = { group = "io.jsonwebtoken", name = "jjwt", version.ref = "jjwt" }
+mapstruct = { group = "org.mapstruct", name = "mapstruct", version.ref = "mapstruct" }
+mapstruct-annotation = { group = "org.mapstruct", name = "mapstruct-processor", version.ref = "mapstruct" }
+http-client = { group = "org.apache.httpcomponents", name = "httpclient", version.ref = "http-client" }
+springfox-spring-boot-starter = { group = "io.springfox", name = "springfox-boot-starter", version.ref = "springfox-spring-boot-starter" }
+jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }
