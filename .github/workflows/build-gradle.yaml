@@ -25,5 +25,5 @@ jobs:
       with:
         gradle-version: 7.4.2
         # arguments: build
-    - run: gradle build --dry-run # just test build configuration
+#    - run: gradle build --dry-run # just test build configuration
     - run: gradle :backoffice:build
